@@ -17,7 +17,9 @@ public class UserServiceMapper {
                 signupRequest.getDateOfBirth() != null ? signupRequest.getDateOfBirth().toString() : null,
                 signupRequest.getAddress() != null ? signupRequest.getAddress() : "",
                 signupRequest.getPassword(),
-                "UNSPECIFIED" // Default gender if not provided
+                (signupRequest.getGender() != null && !signupRequest.getGender().isBlank())
+                        ? signupRequest.getGender()
+                        : "UNSPECIFIED" // Default gender if not provided
         );
     }
 }

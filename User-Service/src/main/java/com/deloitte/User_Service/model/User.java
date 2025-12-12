@@ -12,8 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +37,9 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "contact", nullable = false)
+    private String contact;
+
     @Column(name = "dob", nullable = false)
     private String dateOfBirth;
 
@@ -44,6 +51,13 @@ public class User {
 
     @Column(name = "gender", nullable = false)
     private String gender;
+
+    @Column(name = "role", nullable = true)
+    private String role;
+
+    @Column(name = "metadata", nullable = true)
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, String> metadata;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

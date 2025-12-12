@@ -4,12 +4,10 @@ import com.deloitte.Auth_Service.dto.SignupRequestDto;
 import com.deloitte.Auth_Service.dto.SignupResponseDto;
 import com.deloitte.Auth_Service.dto.UserServiceResponseDto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.deloitte.Auth_Service.gateway.UserServiceGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,9 +19,11 @@ public class SignupService {
     private static final Logger logger = LoggerFactory.getLogger(SignupService.class);
 
     private final UserServiceGateway userServiceGateway;
+    private final PasswordEncoder passwordEncoder;
 
-    public SignupService(UserServiceGateway userServiceGateway) {
+    public SignupService(UserServiceGateway userServiceGateway, PasswordEncoder passwordEncoder) {
         this.userServiceGateway = userServiceGateway;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -36,6 +36,11 @@ public class SignupService {
         logger.info("Processing signup request for email: {}", signupRequest.getEmail());
 
         try {
+            // Hash password before sending to User Service
+            if (signupRequest.getPassword() != null) {
+                signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+            }
+
             // Call UserService to create user
             logger.info("Redirecting signup request to User Service");
             UserServiceResponseDto userServiceResponse = userServiceGateway.createUser(signupRequest);

@@ -1,10 +1,12 @@
 package com.deloitte.Auth_Service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import com.deloitte.Auth_Service.util.MultiFormatLocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +30,7 @@ public class SignupRequestDto {
     private String password;
     @NotNull(message = "Date of birth is required")
     @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonDeserialize(using = MultiFormatLocalDateDeserializer.class)
     private LocalDate dateOfBirth;
     private String phoneNumber;
     private String address;

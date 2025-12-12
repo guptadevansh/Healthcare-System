@@ -14,6 +14,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 /**
  * Gateway to communicate with UserService
  */
@@ -57,25 +59,25 @@ public class UserServiceGateway {
             HttpEntity<UserServiceRequestDto> requestEntity = new HttpEntity<>(userServiceRequest, headers);
 
             // Make the POST request
-            ResponseEntity<UserServiceRequestDto> response = restTemplate.exchange(
+            ResponseEntity<UserServiceResponseDto> responseDto = restTemplate.exchange(
                     url,
                     HttpMethod.POST,
                     requestEntity,
-                    UserServiceRequestDto.class
+                    UserServiceResponseDto.class
             );
 
-            logger.info("UserService responded with status: {}", response.getStatusCode());
+            logger.info("UserService responded with status: {}", responseDto.getStatusCode());
             
-            if (response.getStatusCode() == HttpStatus.OK || 
-                response.getStatusCode() == HttpStatus.CREATED) {
+            if (responseDto.getStatusCode() == HttpStatus.OK ||
+                    responseDto.getStatusCode() == HttpStatus.CREATED) {
                 
                 // Map UserServiceRequestDto response to UserServiceResponseDto
-                UserServiceResponseDto responseDto = mapToUserServiceResponse(response.getBody());
-                logger.info("Successfully created user with ID: {}", responseDto.getUserId());
-                return responseDto;
+//                UserServiceResponseDto responseDto = mapToUserServiceResponse(response.getBody());
+                logger.info("Successfully created user with ID: {}", Objects.requireNonNull(responseDto.getBody()).getUserId());
+                return responseDto.getBody();
             } else {
-                logger.error("Unexpected response status from UserService: {}", response.getStatusCode());
-                throw new RuntimeException("Failed to create user in UserService. Status: " + response.getStatusCode());
+                logger.error("Unexpected response status from UserService: {}", responseDto.getStatusCode());
+                throw new RuntimeException("Failed to create user in UserService. Status: " + responseDto.getStatusCode());
             }
 
         } catch (HttpClientErrorException e) {
@@ -97,26 +99,26 @@ public class UserServiceGateway {
     /**
      * Maps UserServiceRequestDto response from User Service to UserServiceResponseDto
      */
-    private UserServiceResponseDto mapToUserServiceResponse(UserServiceRequestDto userDto) {
+    private UserServiceResponseDto mapToUserServiceResponse(UserServiceResponseDto userDto) {
         if (userDto == null) {
             return null;
         }
 
         UserServiceResponseDto responseDto = new UserServiceResponseDto();
-        responseDto.setUserId(userDto.id() != null ? userDto.id().toString() : null);
-        responseDto.setName(userDto.name());
-        responseDto.setEmail(userDto.email());
+        responseDto.setUserId(userDto.getUserId() != null ? userDto.getUserId() : null);
+        responseDto.setName(userDto.getName());
+        responseDto.setEmail(userDto.getEmail());
         
         // Parse dateOfBirth string to LocalDate
-        if (userDto.dateOfBirth() != null && !userDto.dateOfBirth().isEmpty()) {
+        if (userDto.getDob() != null) {
             try {
-                responseDto.setDob(java.time.LocalDate.parse(userDto.dateOfBirth()));
+                responseDto.setDob(userDto.getDob());
             } catch (Exception e) {
-                logger.warn("Failed to parse dateOfBirth: {}", userDto.dateOfBirth());
+                logger.warn("Failed to parse dateOfBirth: {}", userDto.getDob());
             }
         }
         
-        responseDto.setAddress(userDto.address());
+        responseDto.setAddress(userDto.getAddress());
         responseDto.setCreatedAt(java.time.LocalDateTime.now());
         responseDto.setIsActive(true);
         

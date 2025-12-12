@@ -1,6 +1,6 @@
-package com.deloitte.Auth_Service;
+package com.deloitte.Auth_Service.config;
 
-import com.deloitte.Auth_Service.util.AcceptAnyPasswordEncoder;
+import com.deloitte.Auth_Service.DynamicClientRepository;
 import com.deloitte.Auth_Service.util.CustomClientCredentialsAuthenticationConverter;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -64,7 +65,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new AcceptAnyPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     // JWT signing keys

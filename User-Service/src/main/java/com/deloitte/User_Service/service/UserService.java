@@ -1,16 +1,22 @@
 package com.deloitte.User_Service.service;
 
+import com.deloitte.User_Service.constants.Role;
+import com.deloitte.User_Service.dto.AssignRoleRequestDto;
 import com.deloitte.User_Service.dto.UserDto;
 import com.deloitte.User_Service.exception.UserAlreadyExistsException;
 import com.deloitte.User_Service.exception.ValidationException;
 import com.deloitte.User_Service.model.User;
 import com.deloitte.User_Service.repository.UserRepository;
+
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -47,6 +53,7 @@ public class UserService {
                     .address(request.address())
                     .password(request.password())
                     .gender(request.gender())
+                    .metadata(request.metadata())
                     .build();
 
             log.debug("Saving user to database: {}", request.email());
@@ -85,7 +92,7 @@ public class UserService {
         }
         
         // Basic email format validation
-        if (!request.email().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+        if (!request.email().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+[A-Za-z]{2,}$")) {
             log.warn("Validation failed: invalid email format: {}", request.email());
             throw new ValidationException("Invalid email format");
         }
@@ -101,7 +108,27 @@ public class UserService {
                 user.getDateOfBirth(),
                 user.getAddress(),
                 user.getPassword(),
-                user.getGender()
+                user.getGender(),
+                user.getRole(),
+                user.getMetadata()
         );
+    }
+
+    public void assignRoleToUser(Long userId, AssignRoleRequestDto userRoleRequest) {
+        if(userId == null){
+            log.warn("Validation failed: invalid id: {}", (Object) null);
+            throw new ValidationException("Invalid id");
+        }
+
+        if (!Role.isValid(userRoleRequest.role())) {
+            log.warn("Validation failed: invalid role: {}", (Object) null);
+            throw new ValidationException("Invalid role. Allowed values: ADMIN, DOCTOR, PATIENT");
+        }
+
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            user.get().setRole(userRoleRequest.role().toUpperCase());
+            userRepository.save(user.get());
+        }
     }
 }
