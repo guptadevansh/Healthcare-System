@@ -49,10 +49,11 @@ public class UserService {
             User user = User.builder()
                     .name(request.name())
                     .email(request.email())
+                    .contact(request.contact())
                     .dateOfBirth(request.dateOfBirth())
                     .address(request.address())
                     .password(request.password())
-                    .gender(request.gender())
+                    .gender(request.gender().toUpperCase())
                     .metadata(request.metadata())
                     .build();
 
@@ -105,6 +106,7 @@ public class UserService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getContact(),
                 user.getDateOfBirth(),
                 user.getAddress(),
                 user.getPassword(),

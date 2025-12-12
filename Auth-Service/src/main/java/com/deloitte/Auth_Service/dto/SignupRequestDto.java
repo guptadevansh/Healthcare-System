@@ -28,6 +28,9 @@ public class SignupRequestDto {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
+    @NotBlank(message = "Contact is required")
+    @Size(min = 10, max = 20, message = "Contact must be between 10 and 20 characters")
+    private String contact;
     @NotNull(message = "Date of birth is required")
     @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonDeserialize(using = MultiFormatLocalDateDeserializer.class)

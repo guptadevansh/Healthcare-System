@@ -16,6 +16,9 @@ public record UserServiceRequestDto(
         @NotBlank(message = "Email is required")
         @Email(message = "Email must be a valid email address")
         String email,
+        @NotBlank(message = "Contact is required")
+        @Size(min = 10, max = 20, message = "Contact must be between 10 and 20 characters")
+        String contact,
         @NotBlank(message = "Date of birth is required")
         String dateOfBirth,
         @NotBlank(message = "Address is required")
