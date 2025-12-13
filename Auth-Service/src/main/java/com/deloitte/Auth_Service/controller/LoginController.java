@@ -32,10 +32,6 @@ public class LoginController {
 
     /**
      * Login endpoint that authenticates user and returns JWT token
-     * 
-     * @param loginRequest Login credentials (username/email and password)
-     * @param bindingResult Validation result
-     * @return ResponseEntity with JWT token or error message
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(

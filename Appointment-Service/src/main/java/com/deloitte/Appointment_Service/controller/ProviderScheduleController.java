@@ -52,19 +52,5 @@ public class ProviderScheduleController {
             throw e;
         }
     }
-
-    // @GetMapping("/provider/{providerId}")
-    // public ResponseEntity<List<ScheduleResponseDto>> getProviderSchedules(
-    //         @PathVariable Long providerId) {
-    //     log.info("Received request to fetch all schedules for provider ID: {}", providerId);
-    //     try {
-    //         List<ScheduleResponseDto> schedules = scheduleService.getProviderSchedules(providerId);
-    //         log.info("Retrieved {} schedules for provider ID: {}", schedules.size(), providerId);
-    //         return ResponseEntity.ok(schedules);
-    //     } catch (Exception e) {
-    //         log.error("Error fetching schedules for provider ID: {}", providerId, e);
-    //         throw e;
-    //     }
-    // }
 }
 

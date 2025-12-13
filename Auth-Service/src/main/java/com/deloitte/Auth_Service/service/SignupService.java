@@ -24,15 +24,11 @@ public class SignupService {
 
     public SignupService(UserServiceGateway userServiceGateway) {
         this.userServiceGateway = userServiceGateway;
-        // Use BCryptPasswordEncoder specifically for user passwords
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     /**
      * Handles user signup by forwarding the request to UserService
-     * 
-     * @param signupRequest The signup request containing user details
-     * @return SignupResponseDto with the result
      */
     public SignupResponseDto signup(SignupRequestDto signupRequest) {
         logger.info("Processing signup request for email: {}", signupRequest.getEmail());

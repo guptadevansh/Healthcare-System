@@ -66,8 +66,6 @@ public class SecurityConfig {
 
     /**
      * Default password encoder for OAuth2 client authentication
-     * This accepts any client secret to allow dynamic client registration
-     * Marked as @Primary to be used by OAuth2 Authorization Server
      */
     @Bean
     @Primary

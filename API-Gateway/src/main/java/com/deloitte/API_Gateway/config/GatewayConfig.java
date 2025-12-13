@@ -33,9 +33,9 @@ public class GatewayConfig {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                
-                // Auth Service Routes (No authentication/RBAC required)
-                
+
+                // Auth Service Routes (No authentication required)
+
                 // Signup API - public endpoint
                 .route("auth_service_signup", r -> r
                         .path("/api/signup", "/api/signup/**")
@@ -75,31 +75,7 @@ public class GatewayConfig {
                         })
                         .uri(userServiceUrl)
                 )
-                
-                // // Doctor-accessible routes - view users
-                // .route("user_service_doctor", r -> r
-                //         .path("/api/users/doctors/**")
-                //         .filters(f -> {
-                //             RbacGatewayFilterFactory.Config config = new RbacGatewayFilterFactory.Config();
-                //             config.setAllowedRoles("admin,doctor");
-                //             return f.stripPrefix(0)
-                //                     .filter(rbacFilter.apply(config));
-                //         })
-                //         .uri(userServiceUrl)
-                // )
-                
-                // // Patient-accessible routes - own profile
-                // .route("user_service_patient", r -> r
-                //         .path("/api/users/patients/**")
-                //         .filters(f -> {
-                //             RbacGatewayFilterFactory.Config config = new RbacGatewayFilterFactory.Config();
-                //             config.setAllowedRoles("admin,patient");
-                //             return f.stripPrefix(0)
-                //                     .filter(rbacFilter.apply(config));
-                //         })
-                //         .uri(userServiceUrl)
-                // )
-                
+
                 // General user routes - accessible by all authenticated users
                 .route("user_service_general", r -> r
                         .path("/api/users/**")
@@ -114,7 +90,7 @@ public class GatewayConfig {
                 
                 // Appointment Service Routes
                 
-                // Provider schedule management - accessible by admin and providers
+                // Provider schedule management - accessible by ops only
                 .route("appointment_service_schedules_create", r -> r
                         .path("/api/schedules/create-schedule")
                         .and()
@@ -128,7 +104,7 @@ public class GatewayConfig {
                         .uri(appointmentServiceUrl)
                 )
                 
-                // Get available slots - accessible by all authenticated users
+                // Get available slots - accessible by patients and ops
                 .route("appointment_service_available_slots", r -> r
                         .path("/api/schedules/provider/*/available-slots")
                         .filters(f -> {
@@ -140,7 +116,7 @@ public class GatewayConfig {
                         .uri(appointmentServiceUrl)
                 )
                 
-                // Get provider schedules - accessible by admin and providers
+                // Get provider schedules - accessible by providers only
                 .route("appointment_service_provider_schedules", r -> r
                         .path("/api/schedules/provider/**")
                         .filters(f -> {

@@ -43,9 +43,6 @@ public class LoginService {
 
     /**
      * Handles user login by validating credentials and generating JWT token
-     * 
-     * @param loginRequest The login request containing username (email) and password
-     * @return LoginResponseDto with JWT token or error message
      */
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         logger.info("Processing login request for username: {}", loginRequest.getUsername());
@@ -128,17 +125,11 @@ public class LoginService {
 
     /**
      * Generates JWT token by calling OAuth2 token endpoint
-     * 
-     * @param email User's email (used as clientId)
-     * @param role User's role (added as claim in JWT)
-     * @return JWT access token
      */
     private String generateJwtToken(String email, String role) {
         logger.debug("Calling OAuth2 token endpoint: {}", oauth2TokenUrl);
 
         try {
-            // Prepare request headers with Basic Auth
-            // clientId = email, clientSecret = "any" (as per DynamicClientRepository)
             String credentials = email + ":any";
             String encodedCredentials = Base64.getEncoder().encodeToString(credentials.getBytes());
             

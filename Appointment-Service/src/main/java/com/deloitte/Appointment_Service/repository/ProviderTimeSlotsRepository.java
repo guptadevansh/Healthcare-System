@@ -10,9 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProviderTimeSlotsRepository extends JpaRepository<ProviderTimeSlots, Long> {
-    
-    // List<ProviderTimeSlots> findByProviderId(Long providerId);
-    
+
     Optional<ProviderTimeSlots> findByProviderIdAndScheduleDate(Long providerId, LocalDate scheduleDate);
     
     List<ProviderTimeSlots> findByProviderIdAndScheduleDateGreaterThanEqual(

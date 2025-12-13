@@ -74,9 +74,7 @@ public class UserServiceGateway {
             
             if (responseDto.getStatusCode() == HttpStatus.OK ||
                     responseDto.getStatusCode() == HttpStatus.CREATED) {
-                
-                // Map UserServiceRequestDto response to UserServiceResponseDto
-//                UserServiceResponseDto responseDto = mapToUserServiceResponse(response.getBody());
+
                 logger.info("Successfully created user with ID: {}", Objects.requireNonNull(responseDto.getBody()).getId());
                 return responseDto.getBody();
             } else {

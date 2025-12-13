@@ -106,21 +106,6 @@ public class ProviderScheduleService {
         return availableSlots;
     }
 
-    // public List<ScheduleResponseDto> getProviderSchedules(Long providerId) {
-    //     log.info("Fetching all schedules for provider ID: {}", providerId);
-        
-    //     List<ProviderTimeSlots> schedules = timeSlotsRepository.findByProviderId(providerId);
-        
-    //     if (schedules.isEmpty()) {
-    //         throw new ProviderTimeSlotsNotFoundException(
-    //                 "No schedules found for provider ID: " + providerId);
-    //     }
-        
-    //     return schedules.stream()
-    //             .map(schedule -> mapToScheduleResponseDto(schedule, null))
-    //             .collect(Collectors.toList());
-    // }
-
     @Transactional
     public void updateSlotAvailability(Long providerId, LocalDateTime slotTime, Boolean isAvailable) {
         log.info("Updating slot availability for provider ID: {} at time: {} to: {}", 

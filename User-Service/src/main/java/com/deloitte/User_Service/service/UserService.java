@@ -115,9 +115,6 @@ public class UserService {
 
     /**
      * Get user by email for login authentication
-     * 
-     * @param email User's email address
-     * @return GetUserResponseDto containing user details including encrypted password and role
      */
     public GetUserResponseDto getUserByEmail(String email) {
         log.debug("Fetching user with email: {}", email);
@@ -144,7 +141,7 @@ public class UserService {
                 .contact(user.getContact())
                 .dateOfBirth(user.getDateOfBirth())
                 .address(user.getAddress())
-                .password(user.getPassword()) // Return encrypted password for validation
+                .password(user.getPassword())
                 .gender(user.getGender())
                 .role(user.getRole())
                 .metadata(user.getMetadata())
