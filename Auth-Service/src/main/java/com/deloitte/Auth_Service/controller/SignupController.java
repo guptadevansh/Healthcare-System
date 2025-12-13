@@ -51,11 +51,11 @@ public class SignupController {
         // Process signup
         SignupResponseDto response = signupService.signup(signupRequest);
 
-        if ("SUCCESS".equals(response.getStatus())) {
-            logger.info("Signup successful for user: {}", response.getUserId());
+        if (response.getId() != null) {
+            logger.info("Signup successful for user: {}", response.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
-            logger.error("Signup failed: {}", response.getMessage());
+            logger.error("Signup failed: {}", response.getErrorMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

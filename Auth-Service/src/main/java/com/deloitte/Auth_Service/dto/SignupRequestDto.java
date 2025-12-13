@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 /**
  * DTO for user signup request
@@ -38,6 +39,7 @@ public class SignupRequestDto {
     private String phoneNumber;
     private String address;
     private String gender;
+    private Map<String, String> metadata;
 
     public SignupRequestDto(String name, String email, String password, LocalDate dateOfBirth) {
         this.name = name;

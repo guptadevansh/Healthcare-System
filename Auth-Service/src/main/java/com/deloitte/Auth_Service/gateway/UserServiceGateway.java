@@ -1,5 +1,6 @@
 package com.deloitte.Auth_Service.gateway;
 
+import com.deloitte.Auth_Service.dto.GetUserResponseDto;
 import com.deloitte.Auth_Service.dto.SignupRequestDto;
 import com.deloitte.Auth_Service.dto.UserServiceRequestDto;
 import com.deloitte.Auth_Service.dto.UserServiceResponseDto;
@@ -31,6 +32,9 @@ public class UserServiceGateway {
 
     @Value("${user-service.create-user.endpoint:/api/users/createUser}")
     private String createUserEndpoint;
+
+    @Value("${user-service.get-user.endpoint:/api/users/getUser}")
+    private String getUserEndpoint;
 
     public UserServiceGateway(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -73,7 +77,7 @@ public class UserServiceGateway {
                 
                 // Map UserServiceRequestDto response to UserServiceResponseDto
 //                UserServiceResponseDto responseDto = mapToUserServiceResponse(response.getBody());
-                logger.info("Successfully created user with ID: {}", Objects.requireNonNull(responseDto.getBody()).getUserId());
+                logger.info("Successfully created user with ID: {}", Objects.requireNonNull(responseDto.getBody()).getId());
                 return responseDto.getBody();
             } else {
                 logger.error("Unexpected response status from UserService: {}", responseDto.getStatusCode());
@@ -96,33 +100,60 @@ public class UserServiceGateway {
         }
     }
 
-    /**
-     * Maps UserServiceRequestDto response from User Service to UserServiceResponseDto
-     */
-    private UserServiceResponseDto mapToUserServiceResponse(UserServiceResponseDto userDto) {
-        if (userDto == null) {
-            return null;
-        }
 
-        UserServiceResponseDto responseDto = new UserServiceResponseDto();
-        responseDto.setUserId(userDto.getUserId() != null ? userDto.getUserId() : null);
-        responseDto.setName(userDto.getName());
-        responseDto.setEmail(userDto.getEmail());
+    /**
+     * Calls UserService's getUser API to retrieve user by email
+     * 
+     * @param email User's email address
+     * @return GetUserResponseDto containing user details including encrypted password and role
+     */
+    public GetUserResponseDto getUserByEmail(String email) {
+        String url = userServiceBaseUrl + getUserEndpoint + "?email=" + email;
         
-        // Parse dateOfBirth string to LocalDate
-        if (userDto.getDob() != null) {
-            try {
-                responseDto.setDob(userDto.getDob());
-            } catch (Exception e) {
-                logger.warn("Failed to parse dateOfBirth: {}", userDto.getDob());
+        logger.info("Calling UserService getUser API at: {}", url);
+        logger.debug("Request for email: {}", email);
+
+        try {
+            // Set headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // Create request entity
+            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+            // Make the GET request
+            ResponseEntity<GetUserResponseDto> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    GetUserResponseDto.class
+            );
+
+            logger.info("UserService responded with status: {}", responseEntity.getStatusCode());
+            
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                GetUserResponseDto response = responseEntity.getBody();
+                logger.info("Successfully retrieved user with email: {}", email);
+                return response;
+            } else {
+                logger.error("Unexpected response status from UserService: {}", responseEntity.getStatusCode());
+                throw new RuntimeException("Failed to get user from UserService. Status: " + responseEntity.getStatusCode());
             }
+
+        } catch (HttpClientErrorException e) {
+            logger.error("Client error calling UserService: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            String errorMessage = extractErrorMessage(e.getResponseBodyAsString());
+            throw new RuntimeException("Failed to retrieve user: " + errorMessage, e);
+        } catch (HttpServerErrorException e) {
+            logger.error("Server error from UserService: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("UserService is currently unavailable. Please try again later.", e);
+        } catch (RestClientException e) {
+            logger.error("Error calling UserService: ", e);
+            throw new RuntimeException("Failed to connect to UserService: " + e.getMessage(), e);
+        } catch (Exception e) {
+            logger.error("Unexpected error calling UserService: ", e);
+            throw new RuntimeException("An unexpected error occurred while retrieving user: " + e.getMessage(), e);
         }
-        
-        responseDto.setAddress(userDto.getAddress());
-        responseDto.setCreatedAt(java.time.LocalDateTime.now());
-        responseDto.setIsActive(true);
-        
-        return responseDto;
     }
 
     /**

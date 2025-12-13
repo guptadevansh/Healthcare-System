@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Map;
+
 /**
  * DTO representing User Service's UserDto structure
  * Used for communication with User Service
@@ -28,6 +30,8 @@ public record UserServiceRequestDto(
         @Size(min = 8, message = "Password must be at least 8 characters long")
         String password,
         @NotBlank(message = "Gender is required")
-        String gender) {
+        String gender,
+        String role,
+        Map<String, String> metadata) {
 }
 

@@ -17,7 +17,7 @@
     <description>Authentication and Authorization Service for Healthcare system</description>
     
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <spring-security-oauth2-authorization-server.version>1.2.3</spring-security-oauth2-authorization-server.version>
     </properties>
     

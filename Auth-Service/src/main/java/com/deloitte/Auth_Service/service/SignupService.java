@@ -7,6 +7,7 @@ import com.deloitte.Auth_Service.dto.UserServiceResponseDto;
 import com.deloitte.Auth_Service.gateway.UserServiceGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,10 @@ public class SignupService {
     private final UserServiceGateway userServiceGateway;
     private final PasswordEncoder passwordEncoder;
 
-    public SignupService(UserServiceGateway userServiceGateway, PasswordEncoder passwordEncoder) {
+    public SignupService(UserServiceGateway userServiceGateway) {
         this.userServiceGateway = userServiceGateway;
-        this.passwordEncoder = passwordEncoder;
+        // Use BCryptPasswordEncoder specifically for user passwords
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     /**
@@ -45,12 +47,13 @@ public class SignupService {
             logger.info("Redirecting signup request to User Service");
             UserServiceResponseDto userServiceResponse = userServiceGateway.createUser(signupRequest);
 
-            logger.info("User created successfully in User Service with userId: {}", userServiceResponse.getUserId());
+            logger.info("User created successfully in User Service with userId: {}", userServiceResponse.getId());
 
-            // Map UserService response to Signup response
-            SignupResponseDto response = mapToSignupResponse(userServiceResponse);
-            response.setStatus("SUCCESS");
-            response.setMessage("User registered successfully");
+            // Return success response
+            SignupResponseDto response = new SignupResponseDto();
+            response.setId(userServiceResponse.getId());
+            response.setMessage(userServiceResponse.getMessage() != null ? 
+                userServiceResponse.getMessage() : "User registered successfully");
 
             return response;
 
@@ -59,27 +62,11 @@ public class SignupService {
             
             // Return error response
             SignupResponseDto errorResponse = new SignupResponseDto();
-            errorResponse.setEmail(signupRequest.getEmail());
-            errorResponse.setStatus("FAILURE");
-            errorResponse.setMessage(e.getMessage() != null ? e.getMessage() : "Failed to create user");
+            errorResponse.setErrorMessage(e.getMessage() != null ? e.getMessage() : "Failed to create user");
+            errorResponse.setMessage("Signup failed");
             
             return errorResponse;
         }
-    }
-
-    /**
-     * Maps UserServiceResponseDto to SignupResponseDto
-     */
-    private SignupResponseDto mapToSignupResponse(UserServiceResponseDto userServiceResponse) {
-        SignupResponseDto response = new SignupResponseDto();
-        response.setUserId(userServiceResponse.getUserId());
-        response.setName(userServiceResponse.getName());
-        response.setEmail(userServiceResponse.getEmail());
-        response.setDob(userServiceResponse.getDob());
-        response.setPhoneNumber(userServiceResponse.getPhoneNumber());
-        response.setAddress(userServiceResponse.getAddress());
-        response.setCreatedAt(userServiceResponse.getCreatedAt());
-        return response;
     }
 }
 

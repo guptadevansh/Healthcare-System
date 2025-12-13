@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.deloitte</groupId>
+    <artifactId>Healthcare-System</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Healthcare System</name>
+    <description>Healthcare System - Parent POM</description>
+
+    <modules>
+        <module>User-Service</module>
+        <module>Auth-Service</module>
+        <module>API-Gateway</module>
+    </modules>
+
+</project>
+

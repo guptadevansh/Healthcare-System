@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Appointment Service",
+            "request": "launch",
+            "mainClass": "com.deloitte.Appointment_Service.AppointmentServiceApplication",
+            "projectName": "Appointment-Service",
+            "cwd": "${workspaceFolder}/Appointment-Service",
+            "console": "integratedTerminal",
+            "stopOnEntry": false,
+            "args": "",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "Attach to Appointment Service (Port 5005)",
+            "request": "attach",
+            "hostName": "localhost",
+            "port": 5005
+        }
+    ]
+}
+

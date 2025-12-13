@@ -3,8 +3,9 @@ package com.deloitte.User_Service.constants;
 public enum Role {
 
     ADMIN,
-    DOCTOR,
-    PATIENT;
+    PROVIDER,
+    PATIENT,
+    OPS;
 
     public static boolean isValid(String role) {
         try {

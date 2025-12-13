@@ -30,6 +30,10 @@ public class SecurityConfig {
             .authorizeExchange(exchanges -> exchanges
                 // Allow access to actuator endpoints without authentication
                 .pathMatchers("/actuator/**").permitAll()
+                // Allow signup API without authentication
+                .pathMatchers("/api/signup", "/api/signup/**").permitAll()
+                // Allow login API without authentication
+                .pathMatchers("/api/login", "/api/login/**").permitAll()
                 // All other requests require authentication
                 .anyExchange().authenticated()
             )

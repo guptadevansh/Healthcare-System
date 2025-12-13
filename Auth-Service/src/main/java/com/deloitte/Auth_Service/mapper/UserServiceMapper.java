@@ -20,7 +20,9 @@ public class UserServiceMapper {
                 signupRequest.getPassword(),
                 (signupRequest.getGender() != null && !signupRequest.getGender().isBlank())
                         ? signupRequest.getGender()
-                        : "UNSPECIFIED" // Default gender if not provided
+                        : "UNSPECIFIED", // Default gender if not provided
+                null, // role will be assigned later
+                signupRequest.getMetadata() // Pass metadata through
         );
     }
 }

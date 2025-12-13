@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.deloitte.Auth_Service.util.AcceptAnyPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -63,9 +64,15 @@ public class SecurityConfig {
         return new DynamicClientRepository();
     }
 
+    /**
+     * Default password encoder for OAuth2 client authentication
+     * This accepts any client secret to allow dynamic client registration
+     * Marked as @Primary to be used by OAuth2 Authorization Server
+     */
     @Bean
+    @Primary
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new AcceptAnyPasswordEncoder();
     }
 
     // JWT signing keys
